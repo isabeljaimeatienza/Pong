@@ -6,34 +6,38 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
  * JavaFX App
  */
-public class App extends Application {
-      int ballCenterX = 10; //poner variables globales debajo del class
-      int ballCurrentSpeedX = 10; //esto hará que cambiemos la posición cuando queramos, es decir, le damos la velocidad, lo que le vamos sumando o restando
+public class App extends Application {//declaración de variables- tenemos que intentar tener las menos posibles para ahorrar memoria-
+     short ballCenterX = 10; //poner variables globales debajo del class
+     byte ballCurrentSpeedX = 10; //esto hará que cambiemos la posición cuando queramos, es decir, le damos la velocidad, lo que le vamos sumando o restando
                                   // dependiendo si quiero que vaya hacia atrás para que vaya a la izquierda o sumando y que vaya a la derecha
-      int ballDirectionX = 1; //multiplicas velocidad por dirección
+     byte ballDirectionX = 1; //multiplicas velocidad por dirección
       
-        int ballCenterY = 10; //poner variables globales debajo del class
-      int ballCurrentSpeedY = 10; //esto hará que cambiemos la posición cuando queramos, es decir, le damos la velocidad, lo que le vamos sumando o restando
+     short ballCenterY = 10; //poner variables globales debajo del class
+     byte ballCurrentSpeedY = 10; //esto hará que cambiemos la posición cuando queramos, es decir, le damos la velocidad, lo que le vamos sumando o restando
                                   // dependiendo si quiero que vaya hacia atrás para que vaya a la izquierda o sumando y que vaya a la derecha
-      int ballDirectionY = 1;
+     byte ballDirectionY = 1;
       
       
     @Override
     public void start(Stage stage) {
         
-        
+         final short SCENE_HEIGHT = 480; //poniendo final hacemos una constante
+         final short SCENE_WIDTH = 640; 
         //StackPane lo cambio por pane, porque sino apila (Recuerda guardar los imports en Fix import)
         Pane root = new Pane(); //lo guardo en una variable que he llamado root (el panel)
-        var scene = new Scene(root, 640, 480);//Crea ventana de esa medida usando la variable root
+        var scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);//Crea ventana de esa medida usando la variable root
         scene.setFill(Color.BLACK);//cuidado con las mayúsculas
         stage.setScene(scene);
         stage.show();
@@ -46,11 +50,40 @@ public class App extends Application {
         circleBall.setRadius(7);
         circleBall.setFill(Color.WHITE);//Cambiar el color de la bola
         
+        
+        
+        
         //Circle circleBall2= new Circle(10, 30, 7); es otro modo de hacer la bola pero con menos líneas
         
         root.getChildren().add(circleBall);//los hijos hace referencia a las cosas que contiene el panel
         
+        //Creación de rectángulo
+        short rectHeight = 100;
+        Rectangle rectStick = new Rectangle();
+        rectStick.setWidth(10);
+        rectStick.setHeight(rectHeight);
+        rectStick.setX(SCENE_WIDTH-40);
+        rectStick.setY((SCENE_HEIGHT-rectHeight)/2);
+        rectStick.setFill(Color.WHITE);
+        root.getChildren().add(rectStick);
+       
         
+        //reconocer teclas-detectarlas
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
+            public void handle(final KeyEvent keyEvent){
+                switch(keyEvent.getCode()){
+                    case UP:
+                        System.out.println("arriba");
+                        break;
+                    case DOWN:
+                        System.out.println("abajo");
+                        break;
+                }
+               if (keyEvent.getCode() == KeyCode.UP){
+                   System.out.println("arriba");
+               }
+            }
+        });
          // Game loop usando Timeline
         Timeline timeline = new Timeline(
             // 0.017 ~= 60 FPS
@@ -69,7 +102,7 @@ public class App extends Application {
                     ballCenterY+=ballCurrentSpeedY * ballDirectionY;
                     if (ballCenterY >=480){
                         ballDirectionY = -1;
-                        
+                      //Así haremos que rebote :)
                     }else if(ballCenterY <=0){
                         ballDirectionY = 1;
                     }
@@ -80,6 +113,7 @@ public class App extends Application {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
    }
+    
 
 
    public static void main(String[] args) {
